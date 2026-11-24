@@ -12,6 +12,7 @@ The punch lands in the last five words.
 
 import os
 import sys
+import unicodedata
 
 # The entry: one line, the funniest AI excuse for a missed deadline.
 EXCUSE = (
@@ -39,6 +40,8 @@ def gate_ok(line):
     for ch in line:
         if ord(ch) < 0x20 or ord(ch) == 0x7F:
             return "line contains a control character U+%04X" % ord(ch)
+        if unicodedata.category(ch) in ("Cf", "Cs", "Co", "Cn"):
+            return "line contains a non-printable character U+%04X" % ord(ch)
     line.encode("utf-8")  # raises UnicodeEncodeError if not encodable
     return None
 
